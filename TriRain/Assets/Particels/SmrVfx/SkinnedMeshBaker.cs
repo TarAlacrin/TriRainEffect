@@ -44,6 +44,7 @@ namespace Smrvfx
         List<Vector3> _positionList = new List<Vector3>();
 		List<Vector3> _normalList = new List<Vector3>();
 		List<Vector3> _uvList = new List<Vector3>();
+
 		List<Vector3> _triList = new List<Vector3>();
 		List<int> _triVertIndecies = new List<int>();
 		List<List<int>> _includedTris = new List<List<int>>();
@@ -67,7 +68,15 @@ namespace Smrvfx
         {
             _mesh = new Mesh();
 
-			
+			if (_source != null)
+				_source.BakeMesh(_mesh);
+			else if (_altSource != null)
+				_mesh = _altSource.mesh;
+			else
+				return;
+
+			UpdateTriList();
+			GetIncludedTrianglesPerVertex();
 
 		}
 
@@ -111,8 +120,6 @@ namespace Smrvfx
 			_mesh.GetUVs(0,_uvList);
 
 
-			UpdateTriList();
-			GetIncludedTrianglesPerVertex();
 
 			if (!CheckConsistency()) return;
 

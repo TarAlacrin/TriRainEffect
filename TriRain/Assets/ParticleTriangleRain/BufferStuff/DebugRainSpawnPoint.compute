@@ -1,0 +1,36 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+
+int _VertexCount;
+
+
+AppendStructuredBuffer<float3> _OutSpawnPosBuffer;
+AppendStructuredBuffer<float3> _OutSpawnVelBuffer;
+
+
+Texture2D<float4> PositionTexture;
+Texture2D<float4> VelocityTexture;
+
+
+void SpawnAt(uint id)
+{
+	_OutSpawnPosBuffer.Append(PositionTexture[id]);
+	_OutSpawnVelBuffer.Append(VelocityTexture[id]);
+}
+
+
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+
+
+	float3 spawn
+
+
+    //Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+}

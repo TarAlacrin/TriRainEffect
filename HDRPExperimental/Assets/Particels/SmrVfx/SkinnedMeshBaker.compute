@@ -1,0 +1,78 @@
+#pragma kernel TransferData
+
+uint VertexCount;
+float4x4 Transform;
+float4x4 OldTransform;
+float FrameRate;
+float MainTextureDimension;
+
+StructuredBuffer<float> PositionBuffer;
+StructuredBuffer<float> OldPositionBuffer;
+StructuredBuffer<float> NormalBuffer;
+StructuredBuffer<float> ColorBuffer;
+
+RWTexture2D<float4> PositionMap;
+RWTexture2D<float4> VelocityMap;
+RWTexture2D<float4> NormalMap;
+RWTexture2D<float4> ColorMap;
+
+Texture2D<float4> MainTex;
+SamplerState LinearSampler {
+	Filter = MIN_MAG_MIP_LINEAR;
+	AddressU = Clamp;
+	AddressV = Clamp;
+};
+
+
+// Hash function from H. Schechter & R. Bridson, goo.gl/RXiKaH
+uint Hash(uint s)
+{
+    s ^= 2747636419u;
+    s *= 2654435769u;
+    s ^= s >> 16;
+    s *= 2654435769u;
+    s ^= s >> 16;
+    s *= 2654435769u;
+    return s;
+}
+
+[numthreads(8, 8, 1)]
+void TransferData(uint2 id : SV_DispatchThreadID)
+{
+    uint i = Hash(id.x + id.y * 65536) % VertexCount;
+
+    float3 p1 = float3(
+        PositionBuffer[i * 3],
+        PositionBuffer[i * 3 + 1],
+        PositionBuffer[i * 3 + 2]
+    );
+
+    float3 p0 = float3(
+        OldPositionBuffer[i * 3],
+        OldPositionBuffer[i * 3 + 1],
+        OldPositionBuffer[i * 3 + 2]
+    );
+
+    float3 n1 = float3(
+        NormalBuffer[i * 3],
+        NormalBuffer[i * 3 + 1],
+        NormalBuffer[i * 3 + 2]
+    );
+
+	float3 c1 = float3(
+		ColorBuffer[i * 3],
+		ColorBuffer[i * 3 + 1],
+		ColorBuffer[i * 3 + 2]
+		);
+
+
+    p0 = mul(OldTransform, float4(p0, 1)).xyz;
+    p1 = mul(   Transform, float4(p1, 1)).xyz;
+    n1 = mul(   Transform, float4(n1, 0)).xyz;
+	c1 = MainTex[c1.xy*MainTextureDimension].rgb;
+
+    PositionMap[id] = float4(p1, 1);
+    VelocityMap[id] = float4((p1 - p0) * FrameRate, 0);
+    NormalMap[id] = float4(n1, 0);
+	ColorMap[id] = float4(c1, 1);
+}

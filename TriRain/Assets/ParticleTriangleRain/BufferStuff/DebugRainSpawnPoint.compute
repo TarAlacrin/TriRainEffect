@@ -3,34 +3,31 @@
 
 // Create a RenderTexture with enableRandomWrite flag and set it
 // with cs.SetTexture
-
+#include "Assets/ComputeInc/ComputeIncludes.cginc"
 int _VertexCount;
+float _Time;
 
-
-AppendStructuredBuffer<float3> _OutSpawnPosBuffer;
-AppendStructuredBuffer<float3> _OutSpawnVelBuffer;
-
-
-Texture2D<float4> PositionTexture;
-Texture2D<float4> VelocityTexture;
-
+AppendStructuredBuffer<int> _OutSpawnIndecies;
 
 void SpawnAt(uint id)
 {
-	_OutSpawnPosBuffer.Append(PositionTexture[id]);
-	_OutSpawnVelBuffer.Append(VelocityTexture[id]);
+	_OutSpawnIndecies.Append(id);
+}
+
+float rand_1_05(float uv)
+{
+	float2 noise = (frac(sin(dot(float2(uv, _VertexCount*0.23541), float2(12.9898, 78.233)*2.0)) * 43758.5453));
+	return abs(noise.x + noise.y) * 0.5;
 }
 
 
 
-[numthreads(8,8,1)]
-void CSMain (uint3 id : SV_DispatchThreadID)
+[numthreads(THREADSIZE,1,1)]
+void CSMain (uint id : SV_DispatchThreadID)
 {
-    // TODO: insert actual code here!
+	uint index = Index(id) % _VertexCount;
+	float rand = rand_1_05(index * (_Time%881));
 
-
-	float3 spawn
-
-
-    //Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+	if (rand > 0.95)
+		SpawnAt(index);
 }

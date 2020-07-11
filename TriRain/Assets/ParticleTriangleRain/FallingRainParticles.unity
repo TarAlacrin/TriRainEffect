@@ -342,11 +342,57 @@ MonoBehaviour:
   _source: {fileID: 222225971}
   _altSource: {fileID: 0}
   _positionMap: {fileID: 8400000, guid: 7ce49635e4766e3459a6af5139374703, type: 2}
-  _velocityMap: {fileID: 8400000, guid: 9dd015155bb6278449e6159b4c4e7a76, type: 2}
+  _velocityMap: {fileID: 8400000, guid: 60d5a767dd64aee46991c71ffff66bbc, type: 2}
   _colorMap: {fileID: 8400000, guid: f24dfb7ac8c95d24bb3dcb505ee94d99, type: 2}
   _normalMap: {fileID: 8400000, guid: 589e23e1e0b4c7249b4aca5a5d0ed64f, type: 2}
   _textureMap: {fileID: 2800000, guid: 87ce03bd447ccce48bbff87ac0d8355f, type: 3}
   _compute: {fileID: 7200000, guid: fbc49c62daf6e5a458f3a654fa6b53f7, type: 3}
+--- !u!1 &664657714
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 664657716}
+  - component: {fileID: 664657715}
+  m_Layer: 0
+  m_Name: RainMakerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &664657715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 664657714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd75cb99b9d2304429bc0a38cc1479f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vertexCount: 0
+--- !u!4 &664657716
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 664657714}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.5960277, y: 1.646277, z: 1.3354111}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1948467216}
+  - {fileID: 745277865}
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &684345582
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -416,6 +462,53 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 73421a6ee63077a4d93c7b2f7fc94002, type: 3}
+--- !u!1 &745277864
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 745277865}
+  - component: {fileID: 745277866}
+  m_Layer: 0
+  m_Name: AppendIdsToTexture
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &745277865
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 745277864}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 664657716}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &745277866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 745277864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf7b134e06812bb4c8c62988e384858e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effect: {fileID: 1703960719}
+  appendBufferIdsToTextureCompute: {fileID: 7200000, guid: 09007685b9a323344ab45e5ad98fba98,
+    type: 3}
+  _outIds: {fileID: 8400000, guid: 9dd015155bb6278449e6159b4c4e7a76, type: 2}
 --- !u!1 &1703960717
 GameObject:
   m_ObjectHideFlags: 0
@@ -526,3 +619,48 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1948467215
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1948467216}
+  - component: {fileID: 1948467217}
+  m_Layer: 0
+  m_Name: DebugRainSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1948467216
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1948467215}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1.7518191, y: -0.21900833, z: -0.022755384}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 664657716}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1948467217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1948467215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 281df20533ba451499c60664db1908ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugRainMakerCompute: {fileID: 7200000, guid: dd802ef79413d8e4c8f6958e150338e7,
+    type: 3}

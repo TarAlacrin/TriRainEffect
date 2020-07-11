@@ -78,6 +78,9 @@ namespace Smrvfx
 			UpdateTriList();
 			GetIncludedTrianglesPerVertex();
 
+
+			if (RainMakerManager.inst != null)
+				RainMakerManager.inst.vertexCount = _mesh.vertexCount;
 		}
 
 		void OnDestroy()

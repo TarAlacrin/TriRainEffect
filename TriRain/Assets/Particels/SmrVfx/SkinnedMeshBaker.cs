@@ -8,7 +8,6 @@ namespace Smrvfx
     {
         #region Editable attributes
 
-
         [SerializeField] SkinnedMeshRenderer _source = null;
 		[SerializeField] MeshFilter _altSource = null;
 		Transform sourceTransform
@@ -32,11 +31,14 @@ namespace Smrvfx
 		[SerializeField] Texture2D _textureMap = null;
         [SerializeField] ComputeShader _compute = null;
 
-        #endregion
+		[Space]
+		[SerializeField] MeshCollider meshcollider = null;
 
-        #region Temporary objects
+		#endregion
 
-        Mesh _mesh;
+		#region Temporary objects
+
+		Mesh _mesh;
         Matrix4x4 _previousTransform = Matrix4x4.identity;
 
         int[] _dimensions = new int[2];
@@ -67,7 +69,6 @@ namespace Smrvfx
         void Start()
         {
             _mesh = new Mesh();
-
 			if (_source != null)
 				_source.BakeMesh(_mesh);
 			else if (_altSource != null)
@@ -123,7 +124,7 @@ namespace Smrvfx
 			_mesh.GetUVs(0,_uvList);
 
 
-
+			UpdateCollider();
 			if (!CheckConsistency()) return;
 
             TransferData();
@@ -131,6 +132,15 @@ namespace Smrvfx
             Utility.SwapBuffer(ref _positionBuffer1, ref _positionBuffer2);
             _previousTransform = sourceTransform.localToWorldMatrix;
         }
+
+		//This is actually disgusting.
+		void UpdateCollider()
+		{
+			if (meshcollider == null)
+				return;
+			meshcollider.cookingOptions = MeshColliderCookingOptions.None;
+			meshcollider.sharedMesh = _mesh;
+		}
 
 
 		void UpdateTriList()

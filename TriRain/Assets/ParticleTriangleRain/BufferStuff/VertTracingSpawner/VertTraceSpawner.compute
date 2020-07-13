@@ -1,0 +1,26 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+
+struct ParticleData {
+	float originVertId;//store ids as floats to easier convert to texture later
+	float targetVertId;
+	float percentageTraveled;
+	float velocity;
+};
+
+AppendStructuredBuffer<ParticleData> _ParticlePositionsInTransit;
+
+//AppendBufferToSpawnRainDropies
+
+[numthreads(1,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+	//int index = id.x;
+
+	//_ParticlePositionsInTransit.Append()
+
+    //Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+}

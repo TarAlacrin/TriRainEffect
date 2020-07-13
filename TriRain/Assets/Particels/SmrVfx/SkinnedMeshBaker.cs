@@ -166,6 +166,12 @@ namespace Smrvfx
 			for(int vInd =0; vInd < _mesh.vertexCount; vInd++)
 			{
 				var indeciesFound = _triVertIndecies.Select((b, i) => b == vInd ? i : -1).Where(i => i != -1).ToList();
+
+				for(int l =0; l < indeciesFound.Count; l++)
+				{
+					indeciesFound[l] = indeciesFound[l]/3;
+				}
+
 				_includedTris.Add(indeciesFound);
 				cnt += indeciesFound.Count;
 				if (indeciesFound.Count > max)
@@ -176,6 +182,8 @@ namespace Smrvfx
 			debug += "\n-------\n counted:" + cnt + " =?= actual:" + _triVertIndecies.Count + " \n posCount: " + _positionList.Count + " =?= mshvCount: " + _mesh.vertexCount;
 			debug += "\n mx:" + max + "\n";
 			print(debug);
+
+			VertTraceCornerChecker.inst.ConvertIncludedTrisToAdjacentVertBuffer(_includedTris, _triVertIndecies, cnt);
 		}
 
         #endregion

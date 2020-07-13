@@ -10,15 +10,15 @@ uint _SpawnCount;
 RWTexture2D<float4> _TextureSpawnIds;
 //float _Time;
 
-float4 bitEnc = float4(1., 255., 65025., 16581375.);
+//loat4 bitEnc = float4(1., 255., 65025., 16581375.);
 //float4 bitDec = 1. / bitEnc;
-
+/*
 float4 EncodeFloatRGBA(float v) {
 	float4 enc = bitEnc * v;
 	enc = frac(enc);
 	enc -= enc.yzww * float2(1. / 255., 0.).xxxy;
 	return enc;
-}
+}*/
 
 [numthreads(8,8,1)]//change to 1,1,1 and have the compute dispatch SpawnCount number of threadgroups. Gross.
 //I need the ids to be lined up at the start of the outputted texture. so just have a check index < 

@@ -6,6 +6,10 @@ public class RainMakerManager : MonoBehaviour
 {
 	public static RainMakerManager inst;
 
+	public int VertexTracerCapacity = 65536;
+
+
+
 	[HideInInspector]
 	public int vertexCount;
 

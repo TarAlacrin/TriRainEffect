@@ -1,0 +1,42 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+#include "Assets/ComputeInc/ComputeIncludes.cginc"
+
+struct ParticleData {
+	float originVertId;//store ids as floats to easier convert to texture later
+	float targetVertId;
+	float percentageTraveled;
+	float velocity;
+};
+
+
+float _Deltatime;
+Texture2D<float4> _VertexPositions;
+
+ConsumeStructuredBuffer<ParticleData> _CurrentParticlePositions;
+AppendStructuredBuffer<ParticleData> _ParticlePositionsInTransit;
+AppendStructuredBuffer<ParticleData> _ParticlePositionsAtTarget;
+
+RWTexture2D<float4> _OutputTexToVfxGraph;
+
+
+[numthreads(1,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+	uint index = Index(id);
+	float2 coords = Coord(index).xy;
+
+	ParticleData p = _CurrentParticlePositions.Consume();
+
+	p.percentageTraveled = saturate(p.percentageTraveled + _Deltatime*0.1);
+
+	_OutputTexToVfxGraph[coords] = float4(0, p.targetVertId, p.percentageTraveled, p.velocity);
+
+	if (p.percentageTraveled == 1)
+		_ParticlePositionsAtTarget.Append(p);
+	else
+		_ParticlePositionsInTransit.Append(p);
+}

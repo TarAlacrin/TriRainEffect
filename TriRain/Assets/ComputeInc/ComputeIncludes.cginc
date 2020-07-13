@@ -33,3 +33,10 @@ int3 Coord(float index)
 		);
 }
 
+
+float rand(float2 uv)
+{
+	float2 noise = (frac(sin(dot(float2(uv.x, uv.y*0.773+0.23541), float2(12.9898, 78.233)*2.0)) * 43758.5453));
+	return abs(noise.x + noise.y) * 0.5;
+}
+

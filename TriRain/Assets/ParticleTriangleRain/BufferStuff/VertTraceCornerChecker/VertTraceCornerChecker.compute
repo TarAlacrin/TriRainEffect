@@ -1,0 +1,40 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+#include "Assets/ComputeInc/ComputeIncludes.cginc"
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+struct ParticleData {
+	float originVertId;//store ids as floats to easier convert to texture later
+	float targetVertId;
+	float percentageTraveled;
+	float velocity;
+};
+
+
+float _Time;//JUSTFORDEBUG
+int _VertCount;
+int _AdjacentVertBufferStride;
+StructuredBuffer<int> _AdjacentVertBuffer;
+
+
+ConsumeStructuredBuffer<ParticleData> _ParticlesToCheck;
+AppendStructuredBuffer<ParticleData> _ParticlesInTransit;
+
+AppendStructuredBuffer<int> _VerteciesToSpawnRainFrom;
+
+[numthreads(1,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+	float rnd = rand(float2(id.x*0.31, _Time % 881));
+
+
+	int vind = rnd * _VertCount;
+	ParticleData p;
+	p.originVertId = vind;
+	p.targetVertId = _AdjacentVertBuffer[vind + 1];
+	p.velocity = 0;
+	p.percentageTraveled = 0;
+	_ParticlesInTransit.Append(p);
+}

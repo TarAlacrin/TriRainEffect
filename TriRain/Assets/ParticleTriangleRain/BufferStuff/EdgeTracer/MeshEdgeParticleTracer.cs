@@ -7,13 +7,6 @@ public class MeshEdgeParticleTracer : MonoBehaviour
 {
 	public static MeshEdgeParticleTracer inst;
 	[SerializeField] private ComputeShader edgeTracerCompute = null;
-
-	[SerializeField] RenderTexture meshVertexPositionTex;
-	[SerializeField] RenderTexture outputParticlePositionTex;
-	[Space]
-	[SerializeField] VisualEffect vfxTarget;
-	[SerializeField] string numParticlesPropertyName = "_NumParts";
-
 	public const string _etKernelName = "CSMain";
 	public int _etkernel {
 		get {
@@ -21,7 +14,9 @@ public class MeshEdgeParticleTracer : MonoBehaviour
 		}
 	}
 
-	RenderTexture _tempParticlePositions;
+
+	[SerializeField] RenderTexture meshVertexPositionTex = null;
+
 	ComputeBuffer[] particleSimBuffers = new ComputeBuffer[2];
 	ComputeBuffer argsBuffer;
 
@@ -68,24 +63,9 @@ public class MeshEdgeParticleTracer : MonoBehaviour
     {
 		BufferTools.Swap(particleSimBuffers);
 
-		if(_tempParticlePositions != null && (_tempParticlePositions.width != outputParticlePositionTex.width || _tempParticlePositions.height != outputParticlePositionTex.height))
-		{
-			Destroy(_tempParticlePositions);
-			_tempParticlePositions = null;
-		}
-
-		if(_tempParticlePositions == null)
-		{
-			_tempParticlePositions = Smrvfx.Utility.CreateRenderTexture(outputParticlePositionTex);
-		}
-
-		//edgeTracerCompute.SetInt("_AdjacentVertBufferStride", maxAdjacentVertCount);
-		//edgeTracerCompute.SetBuffer(_etkernel, "_AdjacentVertBuffer", )
-		edgeTracerCompute.SetTexture(_etkernel, "_OutputTexToVfxGraph", _tempParticlePositions);
+		//edgeTracerCompute.SetTexture(_etkernel, "_OutputTexToVfxGraph", _tempParticlePositions);
 		edgeTracerCompute.SetTexture(_etkernel, "_VertexPositions", meshVertexPositionTex);
 
-		edgeTracerCompute.SetVector("_Dimensions", new Vector4(_tempParticlePositions.width, _tempParticlePositions.height, 1f, _tempParticlePositions.width * _tempParticlePositions.height));
-		edgeTracerCompute.SetVector("_InvDimensions", new Vector4(1f / _tempParticlePositions.width, 1f / _tempParticlePositions.height, 1f, 1f / (_tempParticlePositions.width * _tempParticlePositions.height)));
 		edgeTracerCompute.SetFloat("_Deltatime", Time.deltaTime);
 
 		particleSimBuffers[BufferTools.WRITE].SetCounterValue(0);
@@ -96,17 +76,16 @@ public class MeshEdgeParticleTracer : MonoBehaviour
 		int[] appargs = BufferTools.GetArgs(particleSimBuffers[BufferTools.READ], argsBuffer);
 
 		Debug.Log("I have this many parts simming: " + appargs[0]);
-		edgeTracerCompute.Dispatch(_etkernel, appargs[0], 1, 1);
+		if(appargs[0] >0)
+			edgeTracerCompute.Dispatch(_etkernel, appargs[0], 1, 1);
 
-		Graphics.CopyTexture(_tempParticlePositions, outputParticlePositionTex);
-		vfxTarget.SetInt(numParticlesPropertyName, appargs[0]);
+		//Graphics.CopyTexture(_tempParticlePositions, outputParticlePositionTex);
 	}
 
 
 
 	private void OnDestroy()
 	{
-		Smrvfx.Utility.TryDestroy(_tempParticlePositions);
 		Smrvfx.Utility.TryDispose(particleSimBuffers[0]);
 		Smrvfx.Utility.TryDispose(particleSimBuffers[1]);
 		Smrvfx.Utility.TryDispose(argsBuffer);

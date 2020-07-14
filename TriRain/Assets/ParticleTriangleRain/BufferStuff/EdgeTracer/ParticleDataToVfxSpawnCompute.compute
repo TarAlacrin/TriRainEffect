@@ -1,0 +1,28 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+#include "Assets/ComputeInc/ComputeIncludes.cginc"
+
+struct ParticleData {
+	float originVertId;//store ids as floats to easier convert to texture later
+	float targetVertId;
+	float percentageTraveled;
+	float velocity;
+};
+
+StructuredBuffer<ParticleData> _AppendedSpawnParticleData;
+uint _SpawnCount;
+RWTexture2D<float4> _TextureSpawnParticleData;
+
+[numthreads(8, 8, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+	uint index = Index(id);
+	int2 coords = int2(Coord(index).xy);
+
+	uint appendix = index % _SpawnCount;
+	ParticleData p = _AppendedSpawnParticleData[appendix];
+	_TextureSpawnParticleData[coords.xy] = float4(p.originVertId, p.targetVertId, p.percentageTraveled, p.velocity);
+}

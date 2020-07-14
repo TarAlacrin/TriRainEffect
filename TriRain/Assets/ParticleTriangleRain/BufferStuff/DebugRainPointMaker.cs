@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DebugRainPointMaker : MonoBehaviour
 {
+	public static DebugRainPointMaker inst;
 	public ComputeShader debugRainMakerCompute;
 
 	ComputeBuffer[] idsToSpawnABuffer=new ComputeBuffer[2];
@@ -18,19 +19,24 @@ public class DebugRainPointMaker : MonoBehaviour
 		}
 	}
 
+	private void Awake()
+	{
+		DebugRainPointMaker.inst = this;
+	}
+
 
 	// Start is called before the first frame update
 	void Start()
     {
-		idsToSpawnABuffer[BufferTools.READ] = new ComputeBuffer(64, sizeof(int), ComputeBufferType.Append);
-		idsToSpawnABuffer[BufferTools.WRITE] = new ComputeBuffer(64, sizeof(int), ComputeBufferType.Append);
+		idsToSpawnABuffer[BufferTools.READ] = new ComputeBuffer(1024, sizeof(int), ComputeBufferType.Append);
+		idsToSpawnABuffer[BufferTools.WRITE] = new ComputeBuffer(1024, sizeof(int), ComputeBufferType.Append);
 		countBuffer = new ComputeBuffer(4, sizeof(int), ComputeBufferType.IndirectArguments);
 	}
 
 	// Update is called once per frame
 	void Update()
     {
-		UpdateRainSpawner();
+		//UpdateRainSpawner();
 	}
 
 
@@ -47,9 +53,23 @@ public class DebugRainPointMaker : MonoBehaviour
 		int[] args = BufferTools.GetArgs(idsToSpawnABuffer[BufferTools.WRITE], countBuffer);
 		int appendcount = args[0];
 		Debug.Log("appendCount: " + appendcount);
-		RainSpawnAppBuffToTexture.inst.TransposeToTexture2D(idsToSpawnABuffer[BufferTools.WRITE], appendcount);
 
-	} 
+	}
+
+
+	public ComputeBuffer GetSpawnIdBuffer()
+	{
+		idsToSpawnABuffer[BufferTools.WRITE].SetCounterValue(0);
+		return idsToSpawnABuffer[BufferTools.WRITE];
+	}
+
+
+	public void SpawnRain()
+	{
+		int[] args = BufferTools.GetArgs(idsToSpawnABuffer[BufferTools.WRITE], countBuffer);
+		int appendcount = args[0];
+		RainSpawnAppBuffToTexture.inst.TransposeToTexture2D(idsToSpawnABuffer[BufferTools.WRITE], appendcount);
+	}
 
 
 	private void OnDisable()

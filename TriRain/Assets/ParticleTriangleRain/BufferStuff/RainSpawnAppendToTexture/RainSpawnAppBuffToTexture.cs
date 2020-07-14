@@ -57,7 +57,7 @@ public class RainSpawnAppBuffToTexture : MonoBehaviour
 		appendBufferIdsToTextureCompute.SetTexture(_ab2tmkernel, "_TextureSpawnIds",_tempOutIds);
 
 		appendBufferIdsToTextureCompute.Dispatch(_ab2tmkernel, _tempOutIds.width / 8, _tempOutIds.height / 8, 1);
-
+	
 		Graphics.CopyTexture(_tempOutIds, _outIds);
 
 		effect.SetInt("NumToSpawn", count);

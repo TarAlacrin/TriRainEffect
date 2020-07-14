@@ -20,20 +20,14 @@ ConsumeStructuredBuffer<ParticleData> _CurrentParticlePositions;
 AppendStructuredBuffer<ParticleData> _ParticlePositionsInTransit;
 AppendStructuredBuffer<ParticleData> _ParticlePositionsAtTarget;
 
-RWTexture2D<float4> _OutputTexToVfxGraph;
-
 
 [numthreads(1,1,1)]
-void CSMain (uint3 id : SV_DispatchThreadID)
+void CSMain (uint id : SV_DispatchThreadID)
 {
-	uint index = Index(id);
-	float2 coords = Coord(index).xy;
-
 	ParticleData p = _CurrentParticlePositions.Consume();
 
-	p.percentageTraveled = saturate(p.percentageTraveled + _Deltatime*0.1);
+	p.percentageTraveled = saturate(p.percentageTraveled + (p.velocity+0.001)*_Deltatime);
 
-	_OutputTexToVfxGraph[coords] = float4(0, p.targetVertId, p.percentageTraveled, p.velocity);
 
 	if (p.percentageTraveled == 1)
 		_ParticlePositionsAtTarget.Append(p);

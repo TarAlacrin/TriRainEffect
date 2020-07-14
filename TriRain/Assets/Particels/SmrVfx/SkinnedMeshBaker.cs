@@ -76,6 +76,8 @@ namespace Smrvfx
 			else
 				return;
 
+			Update();
+
 			UpdateTriList();
 			GetIncludedTrianglesPerVertex();
 
@@ -157,31 +159,46 @@ namespace Smrvfx
 		}
 
 
+
+		List<int> FindAllIndeciesOf(int value, List<int> target)
+		{
+			List<int> toReturn = new List<int>();
+			for(int i =0; i < target.Count; i++)
+			{
+				if (target[i] == value)
+					toReturn.Add(i/3);
+			}
+
+			return toReturn;
+		}
+
+
 		void GetIncludedTrianglesPerVertex()
 		{
 			_includedTris.Clear();
-			string debug = "included tris:\n";
+			string debug = "";
 			int cnt = 0;
 			int max = 0;
 			for(int vInd =0; vInd < _mesh.vertexCount; vInd++)
 			{
-				var indeciesFound = _triVertIndecies.Select((b, i) => b == vInd ? i : -1).Where(i => i != -1).ToList();
+				var indeciesFound = FindAllIndeciesOf(vInd, _triVertIndecies); //_triVertIndecies.Select((b, i) => b == vInd ? i : -1).Where(i => i != -1).ToList();
 
-				for(int l =0; l < indeciesFound.Count; l++)
+				/*for(int l =0; l < indeciesFound.Count; l++)
 				{
 					indeciesFound[l] = indeciesFound[l]/3;
-				}
+				}*/
 
 				_includedTris.Add(indeciesFound);
 				cnt += indeciesFound.Count;
 				if (indeciesFound.Count > max)
 					max = indeciesFound.Count;
-				//debug += "\t i" + vInd + "->" + indeciesFound.Count;
+				debug += "  vi" + vInd + "->" + indeciesFound.Count;
 			}
+			debug = "\n mx:" + max + "\n" + debug;
+			debug = "-------\n counted:" + cnt + " =?= actual:" + _triVertIndecies.Count + " \n posCount: " + _positionList.Count + " =?= mshvCount: " + _mesh.vertexCount + debug;
+			debug = "included tris:\n" + debug;
 
-			debug += "\n-------\n counted:" + cnt + " =?= actual:" + _triVertIndecies.Count + " \n posCount: " + _positionList.Count + " =?= mshvCount: " + _mesh.vertexCount;
-			debug += "\n mx:" + max + "\n";
-			print(debug);
+			Debug.LogWarning(debug);
 
 			VertTraceCornerChecker.inst.ConvertIncludedTrisToAdjacentVertBuffer(_includedTris, _triVertIndecies, cnt);
 		}

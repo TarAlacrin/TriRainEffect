@@ -27,6 +27,7 @@ public class VertTraceCornerChecker : MonoBehaviour
 	ComputeBuffer adjacentVertIndexBuffer;
 	int maxAdjacentVertCount;
 	int totalVertcount;
+	ComputeBuffer edgeTraceParticlesToSpawn;
 
 	public ComputeBuffer cornersToCheck;
 
@@ -62,7 +63,7 @@ public class VertTraceCornerChecker : MonoBehaviour
 				maxAdjacentVerts = adjVerts.Count;
 		}
 
-		Debug.Log("Processed " + includedTris.Count + " verts and had a max adjacent vertex count of: " + maxAdjacentVerts);
+		Debug.LogWarning("Processed " + includedTris.Count + " verts and had a max adjacent vertex count of: " + maxAdjacentVerts);
 		int[] adjacentVertsCompressed = new int[allAdjacentVerts.Count * maxAdjacentVerts];
 		totalVertcount = includedTris.Count;
 		//compresses the list of lists down into a single int array so it can be sent to a buffer easily. 
@@ -77,6 +78,19 @@ public class VertTraceCornerChecker : MonoBehaviour
 			}
 		}
 
+		string todebug = "adjacentVertList:";
+		for(int v =0; v < totalVertcount; v++)
+		{
+			todebug += "\t v:" + v + "=";
+			for(int av = 0; av < maxAdjacentVerts; av++)
+			{
+				
+				todebug += ":" + adjacentVertsCompressed[v*maxAdjacentVerts + av];
+			}
+		}
+
+		Debug.LogWarning(todebug);
+
 		return adjacentVertsCompressed;
 	}
 
@@ -84,13 +98,14 @@ public class VertTraceCornerChecker : MonoBehaviour
 	{
 		int[] adjacentVerts = GetAdjacentVertsFromTriangles(includedTris, triangleVertInds, out int maxAdjacetVerts);
 		maxAdjacentVertCount = maxAdjacetVerts;
-		adjacentVertIndexBuffer = new ComputeBuffer(includedTris.Count, sizeof(int) * maxAdjacetVerts);
+		adjacentVertIndexBuffer = new ComputeBuffer(includedTris.Count* maxAdjacetVerts, sizeof(int));
 		adjacentVertIndexBuffer.SetData(adjacentVerts);
 	}
 
 
 	private void Start()
 	{
+		edgeTraceParticlesToSpawn = new ComputeBuffer(4096, sizeof(float) * 4, ComputeBufferType.Append);
 		cornersToCheck = new ComputeBuffer(4096, sizeof(float) * 4, ComputeBufferType.Append);
 		argsBuffer = new ComputeBuffer(4, sizeof(int), ComputeBufferType.IndirectArguments);
 	}
@@ -99,6 +114,10 @@ public class VertTraceCornerChecker : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+
+		cornerCheckerCompute.SetVector("_Dimensions", new Vector4(meshVertPositionTex.width, meshVertPositionTex.height, 1f, meshVertPositionTex.width * meshVertPositionTex.height));
+		cornerCheckerCompute.SetVector("_InvDimensions", new Vector4(1f / meshVertPositionTex.width, 1f / meshVertPositionTex.height, 1f, 1f / (meshVertPositionTex.width * meshVertPositionTex.height)));
+
 		cornerCheckerCompute.SetFloat("_Time", Time.time);
 		cornerCheckerCompute.SetInt("_VertCount", totalVertcount);
 
@@ -106,19 +125,25 @@ public class VertTraceCornerChecker : MonoBehaviour
 		cornerCheckerCompute.SetInt("_AdjacentVertBufferStride", maxAdjacentVertCount);
 		cornerCheckerCompute.SetBuffer(_cckernel, "_AdjacentVertBuffer", adjacentVertIndexBuffer);
 
+		cornerCheckerCompute.SetTexture(_cckernel, "_MeshVertPositions", meshVertPositionTex);
+		cornerCheckerCompute.SetTexture(_cckernel, "_MeshVertVelocities", meshVertVelocityTex);
+		cornerCheckerCompute.SetTexture(_cckernel, "_MeshVertNormals", meshVertNormalsTex);
+
 		cornerCheckerCompute.SetBuffer(_cckernel, "_ParticlesToCheck", cornersToCheck);
 		cornerCheckerCompute.SetBuffer(_cckernel, "_ParticlesInTransit", MeshEdgeParticleTracer.inst.GetWriteBuffer());
+		cornerCheckerCompute.SetBuffer(_cckernel, "_EdgeTraceParticlesToSpawn", edgeTraceParticlesToSpawn);
+		edgeTraceParticlesToSpawn.SetCounterValue(0);
+		cornerCheckerCompute.SetBuffer(_cckernel, "_VerteciesToSpawnRainFrom", DebugRainPointMaker.inst.GetSpawnIdBuffer());
+		int[] appargs = BufferTools.GetArgs(cornersToCheck, argsBuffer);
 
-		if(Time.time - lastSpawn > 2f)
-		{
-			lastSpawn = Time.time;
-			cornerCheckerCompute.Dispatch(_cckernel, 10, 1, 1);
+		if(appargs[0] > 0)
+			cornerCheckerCompute.Dispatch(_cckernel, appargs[0], 1, 1);
 
-		}
 		cornersToCheck.SetCounterValue(0);
+		EdgeTraceVFXHandler.inst.PassToSpawner(edgeTraceParticlesToSpawn);
+		DebugRainPointMaker.inst.SpawnRain();
 	}
 
-	float lastSpawn = -3f;
 
 
 	private void OnDestroy()
@@ -126,6 +151,7 @@ public class VertTraceCornerChecker : MonoBehaviour
 		Smrvfx.Utility.TryDispose(adjacentVertIndexBuffer);
 		Smrvfx.Utility.TryDispose(cornersToCheck);
 		Smrvfx.Utility.TryDispose(argsBuffer);
+		Smrvfx.Utility.TryDispose(edgeTraceParticlesToSpawn);
 	}
 
 }

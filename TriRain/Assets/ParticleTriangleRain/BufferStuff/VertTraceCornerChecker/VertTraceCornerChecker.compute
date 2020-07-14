@@ -16,25 +16,106 @@ float _Time;//JUSTFORDEBUG
 int _VertCount;
 int _AdjacentVertBufferStride;
 StructuredBuffer<int> _AdjacentVertBuffer;
-
+Texture2D<float4> _MeshVertPositions;
 
 ConsumeStructuredBuffer<ParticleData> _ParticlesToCheck;
 AppendStructuredBuffer<ParticleData> _ParticlesInTransit;
 
 AppendStructuredBuffer<int> _VerteciesToSpawnRainFrom;
+AppendStructuredBuffer<ParticleData> _EdgeTraceParticlesToSpawn;
+
+
+
+
+
+
+ParticleData FindNextTarget(ParticleData indata, int seedId)
+{
+	int index = int(indata.targetVertId);
+	int2 coords = int2(Coord(index).xy);
+	float3 wsCurPos = _MeshVertPositions[coords].xyz;
+
+	int oldindex = int(indata.originVertId);
+	coords = int2(Coord(oldindex).xy);
+	float3 oldPos;
+	if (oldindex >= 0)
+		oldPos = _MeshVertPositions[coords].xyz;
+	else
+		oldPos = wsCurPos + float3(0, 1, 0);
+	
+	int adjacentIndexStart = index * _AdjacentVertBufferStride;
+
+	float3 oldDir = normalize(wsCurPos - oldPos);
+	float3 curDir = float3(0, -1, 0);//normalize(oldDir * indata.velocity*indata.velocity*0.7 + float3(0, -1, 0));//normalize(lerp(oldDir, float3(0,-1,0), saturate(1- indata.velocity)));
+	float curDot = 0.5;
+
+	float curDist= 1;
+
+	int selectedInt = -1;
+
+	int adjInd, adjVertInd;
+	float3 nextPos, nextDir;
+	float nextdot, rando, nextdist, shouldSelect;
+	for (int i = 0; i < _AdjacentVertBufferStride; i++)
+	{
+		adjInd = adjacentIndexStart + i;
+		adjVertInd = _AdjacentVertBuffer[adjInd];
+		coords = int2(Coord(adjVertInd).xy);
+		nextPos = _MeshVertPositions[coords].xyz;
+		nextDir = normalize(nextPos - wsCurPos);
+		nextdist = length(nextPos - wsCurPos);
+
+		nextdot = dot(nextDir, curDir)*0.5 +0.5;
+		rando = 0;//saturate(rand(float2(nextPos.x + index + i*0.773, seedId + nextPos.y + nextdot))*0.3*(0.8-indata.velocity));
+
+		shouldSelect =  saturate(ceil(nextdot - curDot - rando));
+
+		curDist = lerp(curDist, nextdist, shouldSelect);
+		selectedInt = lerp(selectedInt, adjVertInd, shouldSelect);
+		curDot = lerp(curDot, nextdot, shouldSelect);
+	}
+
+
+	ParticleData pout;
+	pout.originVertId = indata.targetVertId;
+	pout.targetVertId = selectedInt;
+	pout.velocity = 1 / nextdist;//max(0.05, curDot * indata.velocity/nextdist);
+	pout.percentageTraveled = 1/pout.velocity;//this is used to store an estimated "time till complete" for later
+
+
+	return pout;
+}
+
+
 
 [numthreads(1,1,1)]
-void CSMain (uint3 id : SV_DispatchThreadID)
+void CSMain (uint id : SV_DispatchThreadID)
 {
     // TODO: insert actual code here!
-	float rnd = rand(float2(id.x*0.31, _Time % 881));
+	/*float rnd = rand(float2(id.x*0.31, _Time % 881));
 
 
 	int vind = rnd * _VertCount;
 	ParticleData p;
 	p.originVertId = vind;
 	p.targetVertId = _AdjacentVertBuffer[vind + 1];
-	p.velocity = 0;
-	p.percentageTraveled = 0;
-	_ParticlesInTransit.Append(p);
+	p.velocity = 0.1;
+	p.percentageTraveled = 0;*/
+
+	ParticleData psource = _ParticlesToCheck.Consume();//_ParticlesToCheck[id];
+
+	ParticleData ptarget = FindNextTarget(psource, id);
+
+	if (ptarget.targetVertId < 0)
+	{
+		_VerteciesToSpawnRainFrom.Append(int(psource.targetVertId));
+	}
+	else
+	{
+		_EdgeTraceParticlesToSpawn.Append(ptarget);
+		ptarget.percentageTraveled = 0;
+		_ParticlesInTransit.Append(ptarget);
+	}
+
+
 }

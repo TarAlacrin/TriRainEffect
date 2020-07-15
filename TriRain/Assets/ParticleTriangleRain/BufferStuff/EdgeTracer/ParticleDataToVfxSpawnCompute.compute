@@ -19,7 +19,7 @@ RWTexture2D<float4> _TextureSpawnParticleData;
 [numthreads(8, 8, 1)]
 void CSMain(uint3 id : SV_DispatchThreadID)
 {
-	uint index = Index(id)/2;
+	uint index = Index(id);
 	int2 coords = int2(Coord(index).xy);
 
 	uint appendix = index % _SpawnCount;

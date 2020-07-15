@@ -63,7 +63,11 @@ public class MeshEdgeParticleTracer : MonoBehaviour
     {
 		BufferTools.Swap(particleSimBuffers);
 
-		//edgeTracerCompute.SetTexture(_etkernel, "_OutputTexToVfxGraph", _tempParticlePositions);
+
+		edgeTracerCompute.SetVector("_Dimensions", new Vector4(meshVertexPositionTex.width, meshVertexPositionTex.height, 1f, meshVertexPositionTex.width * meshVertexPositionTex.height));
+		edgeTracerCompute.SetVector("_InvDimensions", new Vector4(1f / meshVertexPositionTex.width, 1f / meshVertexPositionTex.height, 1f, 1f / (meshVertexPositionTex.width * meshVertexPositionTex.height)));
+
+
 		edgeTracerCompute.SetTexture(_etkernel, "_VertexPositions", meshVertexPositionTex);
 
 		edgeTracerCompute.SetFloat("_Deltatime", Time.deltaTime);

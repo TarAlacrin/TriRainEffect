@@ -21,12 +21,31 @@ AppendStructuredBuffer<ParticleData> _ParticlePositionsInTransit;
 AppendStructuredBuffer<ParticleData> _ParticlePositionsAtTarget;
 
 
+
+ParticleData SimParticle(ParticleData indata)
+{
+	indata.percentageTraveled = saturate(indata.percentageTraveled + (indata.velocity)*_Deltatime);
+
+	int2 coords = int2(Coord(indata.originVertId).xy);
+	float3 oldVertPos = _VertexPositions[coords].xyz;
+
+	coords = int2(Coord(indata.targetVertId).xy);
+	float3 nextVertPos = _VertexPositions[coords].xyz;
+
+	float3 curDir = normalize(nextVertPos - oldVertPos);
+	float gravDot = dot(curDir, float3(0, -1, 0));
+
+	indata.velocity += gravDot * _Deltatime;
+	return indata;
+}
+
+
 [numthreads(1,1,1)]
 void CSMain (uint id : SV_DispatchThreadID)
 {
 	ParticleData p = _CurrentParticlePositions.Consume();
 
-	p.percentageTraveled = saturate(p.percentageTraveled + (p.velocity+0.001)*_Deltatime);
+	p = SimParticle(p);
 
 
 	if (p.percentageTraveled == 1)

@@ -403,6 +403,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   edgeTracePartSpawnerCompute: {fileID: 7200000, guid: f15a99147ac2a2c44b07bbeb1afbb71f,
     type: 3}
+  _meshVertPositions: {fileID: 8400000, guid: 7ce49635e4766e3459a6af5139374703, type: 2}
 --- !u!1 &561097882
 GameObject:
   m_ObjectHideFlags: 0
@@ -744,6 +745,7 @@ VFXRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 0}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -966,7 +968,7 @@ PrefabInstance:
         type: 3}
       propertyPath: vfxOutput
       value: 
-      objectReference: {fileID: 1069572872}
+      objectReference: {fileID: 1703960719}
     - target: {fileID: 4242929766940531546, guid: fc903cbce6bde3d4c8a4c93d2742bcdf,
         type: 3}
       propertyPath: executeInEditMode
@@ -980,7 +982,7 @@ PrefabInstance:
     - target: {fileID: 4242929766940531546, guid: fc903cbce6bde3d4c8a4c93d2742bcdf,
         type: 3}
       propertyPath: vfxProperty
-      value: _TestField
+      value: _CollisionField
       objectReference: {fileID: 0}
     - target: {fileID: 4242929766940531546, guid: fc903cbce6bde3d4c8a4c93d2742bcdf,
         type: 3}
@@ -991,6 +993,11 @@ PrefabInstance:
         type: 3}
       propertyPath: scaleBy
       value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4242929766940531546, guid: fc903cbce6bde3d4c8a4c93d2742bcdf,
+        type: 3}
+      propertyPath: sdfResolution
+      value: 128
       objectReference: {fileID: 0}
     - target: {fileID: 4242929766940531547, guid: fc903cbce6bde3d4c8a4c93d2742bcdf,
         type: 3}
@@ -1055,7 +1062,7 @@ PrefabInstance:
     - target: {fileID: 4242929766940531549, guid: fc903cbce6bde3d4c8a4c93d2742bcdf,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc903cbce6bde3d4c8a4c93d2742bcdf, type: 3}

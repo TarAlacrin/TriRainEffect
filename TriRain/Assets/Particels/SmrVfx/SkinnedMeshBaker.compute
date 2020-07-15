@@ -39,7 +39,8 @@ uint Hash(uint s)
 [numthreads(8, 8, 1)]
 void TransferData(uint2 id : SV_DispatchThreadID)
 {
-    uint i = Hash(id.x + id.y * 65536) % VertexCount;
+
+	uint i = (id.x + id.y * 512)%VertexCount;//Hash(id.x + id.y * 65536) % VertexCount;
 
     float3 p1 = float3(
         PositionBuffer[i * 3],

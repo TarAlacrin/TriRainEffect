@@ -53,7 +53,7 @@ public class DebugRainPointMaker : MonoBehaviour
 		int[] args = BufferTools.GetArgs(idsToSpawnABuffer[BufferTools.WRITE], countBuffer);
 		int appendcount = args[0];
 		Debug.Log("appendCount: " + appendcount);
-
+		
 	}
 
 

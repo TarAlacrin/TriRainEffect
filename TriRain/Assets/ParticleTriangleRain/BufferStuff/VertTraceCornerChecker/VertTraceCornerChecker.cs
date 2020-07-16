@@ -66,6 +66,7 @@ public class VertTraceCornerChecker : MonoBehaviour
 		Debug.LogWarning("Processed " + includedTris.Count + " verts and had a max adjacent vertex count of: " + maxAdjacentVerts);
 		int[] adjacentVertsCompressed = new int[allAdjacentVerts.Count * maxAdjacentVerts];
 		totalVertcount = includedTris.Count;
+
 		//compresses the list of lists down into a single int array so it can be sent to a buffer easily. 
 		for (int k = 0; k < allAdjacentVerts.Count; k++)
 		{
@@ -77,7 +78,7 @@ public class VertTraceCornerChecker : MonoBehaviour
 				adjacentVertsCompressed[k * maxAdjacentVerts + j] = adjacentVerts[j1];
 			}
 		}
-
+		
 		string todebug = "adjacentVertList:";
 		for(int v =0; v < totalVertcount; v++)
 		{
@@ -105,9 +106,10 @@ public class VertTraceCornerChecker : MonoBehaviour
 
 	private void Start()
 	{
-		edgeTraceParticlesToSpawn = new ComputeBuffer(4096, sizeof(float) * 4, ComputeBufferType.Append);
-		cornersToCheck = new ComputeBuffer(4096, sizeof(float) * 4, ComputeBufferType.Append);
+		edgeTraceParticlesToSpawn = new ComputeBuffer(8192, sizeof(float) * 4, ComputeBufferType.Append);
+		cornersToCheck = new ComputeBuffer(8192, sizeof(float) * 4, ComputeBufferType.Append);
 		argsBuffer = new ComputeBuffer(4, sizeof(int), ComputeBufferType.IndirectArguments);
+		RenderTexture rt;
 	}
 
 

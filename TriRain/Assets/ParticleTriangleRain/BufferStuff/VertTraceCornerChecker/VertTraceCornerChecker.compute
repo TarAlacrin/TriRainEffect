@@ -21,7 +21,7 @@ Texture2D<float4> _MeshVertPositions;
 ConsumeStructuredBuffer<ParticleData> _ParticlesToCheck;
 AppendStructuredBuffer<ParticleData> _ParticlesInTransit;
 
-AppendStructuredBuffer<int> _VerteciesToSpawnRainFrom;
+AppendStructuredBuffer<float2> _VerteciesToSpawnRainFrom;
 AppendStructuredBuffer<ParticleData> _EdgeTraceParticlesToSpawn;
 
 
@@ -101,7 +101,7 @@ void CSMain (uint id : SV_DispatchThreadID)
 
 	if (ptarget.targetVertId < 0)
 	{
-		_VerteciesToSpawnRainFrom.Append(int(psource.targetVertId));
+		_VerteciesToSpawnRainFrom.Append(float2(int(psource.targetVertId), 1/psource.velocity ));
 	}
 	else
 	{

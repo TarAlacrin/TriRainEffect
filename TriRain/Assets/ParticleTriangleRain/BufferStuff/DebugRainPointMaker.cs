@@ -28,8 +28,8 @@ public class DebugRainPointMaker : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
-		idsToSpawnABuffer[BufferTools.READ] = new ComputeBuffer(1024, sizeof(int), ComputeBufferType.Append);
-		idsToSpawnABuffer[BufferTools.WRITE] = new ComputeBuffer(1024, sizeof(int), ComputeBufferType.Append);
+		idsToSpawnABuffer[BufferTools.READ] = new ComputeBuffer(4096, sizeof(float)*2, ComputeBufferType.Append);
+		idsToSpawnABuffer[BufferTools.WRITE] = new ComputeBuffer(4096, sizeof(float)*2, ComputeBufferType.Append);
 		countBuffer = new ComputeBuffer(4, sizeof(int), ComputeBufferType.IndirectArguments);
 	}
 

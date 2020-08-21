@@ -12,38 +12,19 @@ struct ParticleData {
 	float velocity;
 };
 
-float _Time;
 uint _VertCount;
 AppendStructuredBuffer<ParticleData> _ParticlePositionsToCheck;
-Texture2D _MeshVertPositions;
-//AppendBufferToSpawnRainDropies
+StructuredBuffer<int> _SpawnParticlesAtVertecies;
 
-uint findVertIndex(uint offsetID)
-{
-	for (uint i = 0; i < _VertCount; i++)
-	{
-		uint ind = (i + offsetID) % _VertCount;
-		uint2 coord = uint2(Coord(ind).xy);
 
-		float3 vpos = _MeshVertPositions[coord].xyz;
-
-		if (vpos.y > 0.5)
-			return i;
-	}
-
-	return 0;
-}
-
- 
 
 [numthreads(1,1,1)]
 void CSMain (uint id : SV_DispatchThreadID)
 {
-	float rando = rand(float2(_Time, id));
 	ParticleData pout;
 	pout.originVertId = -1;
 	pout.velocity = 1;
 	pout.percentageTraveled = 1;
-	pout.targetVertId = int(rando * _VertCount) % _VertCount; //findVertIndex(int(rando*_VertCount)); //;
+	pout.targetVertId = _SpawnParticlesAtVertecies[id % _VertCount];//int(rando * _VertCount) % _VertCount; //findVertIndex(int(rando*_VertCount)); //;
 	_ParticlePositionsToCheck.Append(pout);
 }

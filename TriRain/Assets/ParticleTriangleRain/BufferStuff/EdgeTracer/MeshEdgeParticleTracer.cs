@@ -79,7 +79,7 @@ public class MeshEdgeParticleTracer : MonoBehaviour
 
 		int[] appargs = BufferTools.GetArgs(particleSimBuffers[BufferTools.READ], argsBuffer);
 
-		Debug.Log("I have this many parts simming: " + appargs[0]);
+		//Debug.Log("I have this many parts simming: " + appargs[0]);
 		if(appargs[0] >0)
 			edgeTracerCompute.Dispatch(_etkernel, appargs[0], 1, 1);
 

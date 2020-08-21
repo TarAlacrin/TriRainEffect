@@ -109,7 +109,6 @@ public class VertTraceCornerChecker : MonoBehaviour
 		edgeTraceParticlesToSpawn = new ComputeBuffer(8192, sizeof(float) * 4, ComputeBufferType.Append);
 		cornersToCheck = new ComputeBuffer(8192, sizeof(float) * 4, ComputeBufferType.Append);
 		argsBuffer = new ComputeBuffer(4, sizeof(int), ComputeBufferType.IndirectArguments);
-		RenderTexture rt;
 	}
 
 

@@ -17,5 +17,5 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 	float2 coords = Coord(index).xy;
 
 	uint appendix = index % _SpawnCount;
-	_TextureSpawnIds[coords.xy] = _AppendedSpawnIds[appendix].xyxy;//EncodeFloatRGBA( _AppendedSpawnIds[appendix]); //float4(id.x & id.y, (id.x & 15) / 15.0, (id.y & 15) / 15.0, 0.0);
+	_TextureSpawnIds[coords.xy] = _AppendedSpawnIds[appendix].xyxy;
 }

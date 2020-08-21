@@ -43,13 +43,13 @@ namespace Smrvfx
 
         int[] _dimensions = new int[2];
 
-        List<Vector3> _positionList = new List<Vector3>();
+	    public List<Vector3> _positionList = new List<Vector3>();
 		List<Vector3> _normalList = new List<Vector3>();
 		List<Vector3> _uvList = new List<Vector3>();
 
-		List<Vector3> _triList = new List<Vector3>();
-		List<int> _triVertIndecies = new List<int>();
-		List<List<int>> _includedTris = new List<List<int>>();
+		public List<Vector3> _triList = new List<Vector3>();
+		public List<int> _triVertIndecies = new List<int>();
+		public List<List<int>> _includedTris = new List<List<int>>();
 
 		ComputeBuffer _positionBuffer1;
         ComputeBuffer _positionBuffer2;

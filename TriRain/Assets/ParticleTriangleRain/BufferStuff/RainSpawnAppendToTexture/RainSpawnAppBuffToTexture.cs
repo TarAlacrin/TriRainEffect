@@ -18,11 +18,8 @@ public class RainSpawnAppBuffToTexture : MonoBehaviour
 	}
 
 
-
 	[SerializeField] RenderTexture _outIds =null;
 	RenderTexture _tempOutIds;
-
-
 
 	// Start is called before the first frame update
 	void Start()

@@ -89,6 +89,9 @@ public class RaynCastBufferHandler : MonoBehaviour
 
 		spawnIdBuffer.SetData(idBufferData);
 		TransposeToTexture2D(spawnIdBuffer, indexToSpawnRainEffectsAt.Count);
+
+
+		//TODO: delay on CPU the spawner command,
 	}
 
 

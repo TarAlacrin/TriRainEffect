@@ -64,7 +64,12 @@ public class RaynCastHandler : MonoBehaviour
 
 	void SpawnVertRain(FrameSpawnInfo fsi)
 	{
-		RaynCastBufferHandler.inst.TransposeSpawnIntsToTexture2D(fsi.vertIndexSpawns, delayerFrameReference.framesToDelay);
+		RaynCastBufferHandler.inst.TransposeSpawnIntsToTexture2D(fsi.vertIndexSpawns, delayerFrameReference.framesToDelay-1);
+	}
+
+	void SpawnEdgeTraceImpact(FrameSpawnInfo fsi)
+	{
+		VertTraceSpawnerFromRaynCast.inst.TransposeSpawnIntsToVertTrace(fsi.vertIndexSpawns, delayerFrameReference.framesToDelay-1);
 	}
 
 	void CycleFrameSpawns()
@@ -76,7 +81,7 @@ public class RaynCastHandler : MonoBehaviour
 			pastFrameSpawnInfos[i] = fsi;
 			if (fsi.frameLife <= 0)
 			{
-				SpawnVertRain(fsi);
+				SpawnEdgeTraceImpact(fsi);
 				pastFrameSpawnInfos.RemoveAt(i);
 			}
 		}
@@ -87,7 +92,7 @@ public class RaynCastHandler : MonoBehaviour
 		CycleFrameSpawns();
 		currentFrameInfo = new FrameSpawnInfo();
 		currentFrameInfo.vertIndexSpawns = new List<int>();
-		currentFrameInfo.frameLife = delayerFrameReference.framesToDelay;
+		currentFrameInfo.frameLife = delayerFrameReference.framesToDelay-1;
 
 		spawnsLeft += numToSpawnPerSecond*Time.deltaTime;
 
@@ -99,6 +104,8 @@ public class RaynCastHandler : MonoBehaviour
 		}
 		//need to send data to the rayncast spawner immediately when new, and to the traditional edgeTrace spawner when finished delaying
 		pastFrameSpawnInfos.Add(currentFrameInfo);
+		SpawnVertRain(currentFrameInfo);
+
 	}
 }
 

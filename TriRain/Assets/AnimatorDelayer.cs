@@ -14,11 +14,20 @@ public class AnimatorDelayer : MonoBehaviour
 			if(Time.captureDeltaTime != 0f)
 				return (int)(secondsToDelay * (float)Time.captureFramerate);
 			else
-				return (int)(secondsToDelay * 60f);
+			{
+				Time.captureFramerate = 60;
+				return (int)(secondsToDelay * 60);
+			}
 		}
 	}
-    // Start is called before the first frame update
-    void Start()
+
+	private void Awake()
+	{
+		if (Time.captureDeltaTime == 0f)
+			Time.captureFramerate = 60;
+	}
+	// Start is called before the first frame update
+	void Start()
     {
 		todelay.speed = 0;
     }
@@ -33,6 +42,7 @@ public class AnimatorDelayer : MonoBehaviour
     {
         if(Time.frameCount == framesToDelay)
 		{
+			Debug.Log("resuming at Time = " + Time.time + " seconds");
 			Resume();
 		}
     }

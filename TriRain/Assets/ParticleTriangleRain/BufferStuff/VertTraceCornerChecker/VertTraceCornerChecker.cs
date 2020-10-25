@@ -134,7 +134,7 @@ public class VertTraceCornerChecker : MonoBehaviour
 		cornerCheckerCompute.SetBuffer(_cckernel, "_ParticlesInTransit", MeshEdgeParticleTracer.inst.GetWriteBuffer());
 		cornerCheckerCompute.SetBuffer(_cckernel, "_EdgeTraceParticlesToSpawn", edgeTraceParticlesToSpawn);
 		edgeTraceParticlesToSpawn.SetCounterValue(0);
-		cornerCheckerCompute.SetBuffer(_cckernel, "_VerteciesToSpawnRainFrom", DebugRainPointMaker.inst.GetSpawnIdBuffer());
+		cornerCheckerCompute.SetBuffer(_cckernel, "_VerteciesToSpawnRainFrom", RainFallingPointMaker.inst.GetSpawnIdBuffer());
 		int[] appargs = BufferTools.GetArgs(cornersToCheck, argsBuffer);
 
 		if(appargs[0] > 0)
@@ -142,7 +142,7 @@ public class VertTraceCornerChecker : MonoBehaviour
 
 		cornersToCheck.SetCounterValue(0);
 		EdgeTraceVFXHandler.inst.PassToSpawner(edgeTraceParticlesToSpawn);
-		DebugRainPointMaker.inst.SpawnRain();
+		RainFallingPointMaker.inst.SpawnRain();
 	}
 
 

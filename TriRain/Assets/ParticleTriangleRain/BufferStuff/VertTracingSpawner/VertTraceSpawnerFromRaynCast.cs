@@ -49,7 +49,7 @@ public class VertTraceSpawnerFromRaynCast : MonoBehaviour
 
 	void CheckAndSpawnVertTracersAtIndecies(List<int> vertsToSpawn)
 	{
-			Debug.Log("First Spawn At Time:" + Time.time);
+			//Debug.Log("First Spawn At Time:" + Time.time);
 			indeciesToSpawnBuffer.SetData(vertsToSpawn);
 
 			if(vertsToSpawn.Count >0)

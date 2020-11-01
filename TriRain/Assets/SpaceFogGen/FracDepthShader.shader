@@ -1,4 +1,4 @@
-﻿Shader "Hidden/Shader/SpaceFogShader"
+﻿Shader "Hidden/Shader/FracDepthShader"
 {
     HLSLINCLUDE
 
@@ -55,42 +55,45 @@
 		return dir;
 	}
 
-
-	float4 SampleRayMarch(float3 wsPos, float4 curColor, float stepSize)
-	{
-		float d = Density(pos);
-	}
-
-
-
 	float3 DoRayMarch(float sceneDepth, float2 uv, float3 sceneColor)
 	{
 		float3 wsDir = GetPixelRayDirectionWS(uv);
-		float3 wsStartPoint = _WorldSpaceCameraPos.xyz;
-
 		float4 colToRet = 0;
-		[unroll]
 		for (int i = 0; i < 64; i++)
 		{
 			float curDepth = _ProjectionParams.y + ((float)i) * _RayMarchStepSize;
 
 			if (curDepth > sceneDepth)
 			{
-				colToRet = float4(lerp(sceneColor.rgb, colToRet.rgb, colToRet.a), saturate(colToRet.a+sceneColor.a));
+				return sceneColor;
 			}
-
-			float3 wpos = wsStartPoint + curDepth * wsDir;
 			
-			colToRet = SampleRayMarch(wpos, colToRet, _RayMarchStepSize);
+			float3 wpos = _WorldSpaceCameraPos.xyz + curDepth*wsDir;
 
-			if (colToRet.a == 1)
+			if (wpos.y < 0)
 			{
-				return colToRet.rgb;
+				colToRet += float4(.01*saturate(abs(wpos.y*0.1)), 0, 0, 0.1);
 			}
 		}
 
-		return lerp(sceneColor.rgb, colToRet.rgb, colToRet.a);
+		return colToRet.rgb;
 	}
+
+	 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -99,11 +102,9 @@
         UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
         uint2 positionSS = input.texcoord * _ScreenSize.xy;
-		float depth = LOAD_TEXTURE2D_X(_CameraDepthTexture, positionSS).x;
-		depth = 1.0/(_ZBufferParams.z*depth + _ZBufferParams.w);//LinearEyeDepth(depth);
-		 
+		float depth = (1-LOAD_TEXTURE2D_X(_CameraDepthTexture, positionSS).x)*(_ProjectionParams.z - _ProjectionParams.y)+ _ProjectionParams.y;
 		float3 outColor = LOAD_TEXTURE2D_X(_InputTexture, positionSS).xyz;
-		outColor = DoRayMarch(depth, input.texcoord, outColor);
+		outColor = frac(depth);//DoRayMarch(depth, input.texcoord, outColor);
 		
 
 		return float4(outColor,  1); 

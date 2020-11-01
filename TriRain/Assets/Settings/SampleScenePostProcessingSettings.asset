@@ -145,6 +145,11 @@ MonoBehaviour:
     m_Value: 0.48
     min: 0
     max: 1
+  raymarchStep:
+    m_OverrideState: 1
+    m_Value: 0.1
+    min: 0
+    max: 1
 --- !u!114 &6640133647794636954
 MonoBehaviour:
   m_ObjectHideFlags: 3

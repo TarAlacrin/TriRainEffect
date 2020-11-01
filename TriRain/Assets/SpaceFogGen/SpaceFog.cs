@@ -9,7 +9,11 @@ public sealed class SpaceFog : CustomPostProcessVolumeComponent, IPostProcessCom
     [Tooltip("Controls the intensity of the effect.")]
     public ClampedFloatParameter intensity = new ClampedFloatParameter(0f, 0f, 1f);
 
-    Material m_Material;
+	[Tooltip("Controls the size of the raymarch step.")]
+	public ClampedFloatParameter raymarchStep = new ClampedFloatParameter(0.1f, 0f, 1f);
+
+
+	Material m_Material;
 
     public bool IsActive() => m_Material != null && intensity.value > 0f;
 
@@ -26,14 +30,41 @@ public sealed class SpaceFog : CustomPostProcessVolumeComponent, IPostProcessCom
             Debug.LogError($"Unable to find shader '{kShaderName}'. Post Process Volume SpaceFog is unable to load.");
     }
 
-    public override void Render(CommandBuffer cmd, HDCamera camera, RTHandle source, RTHandle destination)
+	public Matrix4x4 GetInvVP(Camera camera)
+	{
+		Matrix4x4 V = camera.worldToCameraMatrix;
+		Matrix4x4 P = camera.projectionMatrix;
+
+		bool d3d = SystemInfo.graphicsDeviceVersion.IndexOf("Direct3D") > -1;
+
+		if(d3d)
+		{
+			// Scale and bias from OpenGL -> D3D depth range
+			for (int i = 0; i < 4; i++) { P[2, i] = P[2, i] * 0.5f + P[3, i] * 0.5f; }
+		}
+
+		return (V*P).inverse;
+	}
+
+
+	public override void Render(CommandBuffer cmd, HDCamera camera, RTHandle source, RTHandle destination)
     {
         if (m_Material == null)
             return;
+		m_Material.SetFloat("_Intensity", intensity.value);
+		m_Material.SetFloat("_RayMarchStepSize", raymarchStep.value);
 
-        m_Material.SetFloat("_Intensity", intensity.value);
         m_Material.SetTexture("_InputTexture", source);
-        HDUtils.DrawFullScreen(cmd, m_Material, destination);
+
+		m_Material.SetVector("_WSCameraForward", camera.camera.transform.forward);
+
+		float verticalScreenFOVFactor = Mathf.Tan(Mathf.Deg2Rad * camera.camera.fieldOfView * 0.5f);
+		m_Material.SetVector("_WSScreenVerticalDirection", camera.camera.transform.up*verticalScreenFOVFactor);
+		m_Material.SetVector("_WSScreenHorizontDirection", camera.camera.transform.right*verticalScreenFOVFactor*camera.camera.aspect);
+
+		camera.camera.depthTextureMode = DepthTextureMode.Depth;
+
+		HDUtils.DrawFullScreen(cmd, m_Material, destination);
     }
 
     public override void Cleanup()

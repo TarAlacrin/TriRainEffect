@@ -12,6 +12,8 @@ public sealed class SpaceFog : CustomPostProcessVolumeComponent, IPostProcessCom
 	[Tooltip("Controls the size of the raymarch step.")]
 	public ClampedFloatParameter raymarchStep = new ClampedFloatParameter(0.1f, 0f, 1f);
 
+	[Tooltip("Noise texture for nebula.")]
+	public TextureParameter noiseTexture = new TextureParameter(null, false);
 
 	Material m_Material;
 
@@ -55,7 +57,8 @@ public sealed class SpaceFog : CustomPostProcessVolumeComponent, IPostProcessCom
 		m_Material.SetFloat("_RayMarchStepSize", raymarchStep.value);
 
         m_Material.SetTexture("_InputTexture", source);
-
+		m_Material.SetTexture("_NoiseTexture", noiseTexture.value);
+		
 		m_Material.SetVector("_WSCameraForward", camera.camera.transform.forward);
 
 		float verticalScreenFOVFactor = Mathf.Tan(Mathf.Deg2Rad * camera.camera.fieldOfView * 0.5f);

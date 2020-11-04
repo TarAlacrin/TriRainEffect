@@ -69,6 +69,9 @@
 		float3 wsStartPoint = _WorldSpaceCameraPos.xyz;
 
 		float4 colToRet = 0;
+
+
+
 		[unroll]
 		for (int i = 0; i < 64; i++)
 		{
@@ -78,15 +81,15 @@
 			{
 				colToRet = float4(lerp(sceneColor.rgb, colToRet.rgb, colToRet.a), saturate(colToRet.a+sceneColor.a));
 			}
+			if (colToRet.a == 1)
+			{
+				return colToRet.rgb;
+			}
 
 			float3 wpos = wsStartPoint + curDepth * wsDir;
 			
 			colToRet = SampleRayMarch(wpos, colToRet, _RayMarchStepSize);
 
-			if (colToRet.a == 1)
-			{
-				return colToRet.rgb;
-			}
 		}
 
 		return lerp(sceneColor.rgb, colToRet.rgb, colToRet.a);

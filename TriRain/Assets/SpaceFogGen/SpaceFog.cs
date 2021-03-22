@@ -1,7 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
+
+using UnityEngine.Rendering.PostProcessing;
+
 using System;
+using UnityEngine.Serialization;
 
 [Serializable, VolumeComponentMenu("Post-processing/Custom/SpaceFogShader")]
 public sealed class SpaceFog : CustomPostProcessVolumeComponent, IPostProcessComponent
@@ -10,10 +14,12 @@ public sealed class SpaceFog : CustomPostProcessVolumeComponent, IPostProcessCom
     public ClampedFloatParameter intensity = new ClampedFloatParameter(0f, 0f, 1f);
 
 	[Tooltip("Controls the size of the raymarch step.")]
-	public ClampedFloatParameter raymarchStep = new ClampedFloatParameter(0.1f, 0f, 1f);
+	public ClampedFloatParameter raymarchStep = new ClampedFloatParameter(0.1f, 0f, 1f); 
 
-	[Tooltip("Noise texture for nebula.")]
-	public TextureParameter noiseTexture = new TextureParameter(null, false);
+	[Tooltip("The lens dirt texture used to add smudges or dust to the bloom effect."), DisplayName("TEXUT")]
+	public UnityEngine.Rendering.TextureParameter noiseTextureParam = new UnityEngine.Rendering.TextureParameter(null);//new UnityEngine.Rendering.PostProcessing.TextureParameter { value = null };
+
+	public Texture NoiseTexture = null;
 
 	Material m_Material;
 
@@ -56,9 +62,20 @@ public sealed class SpaceFog : CustomPostProcessVolumeComponent, IPostProcessCom
 		m_Material.SetFloat("_Intensity", intensity.value);
 		m_Material.SetFloat("_RayMarchStepSize", raymarchStep.value);
 
-        m_Material.SetTexture("_InputTexture", source);
-		m_Material.SetTexture("_NoiseTexture", noiseTexture.value);
+
+		m_Material.SetTexture("_InputTexture", source);
+		m_Material.SetTexture("_NoiseTexture", noiseTextureParam.value);
 		
+		if(noiseTextureParam.value == null)
+		{
+			Debug.Log("HELP IM NULL");
+		}
+		else
+		{
+			Debug.Log("I AINT NULL");
+
+		}
+
 		m_Material.SetVector("_WSCameraForward", camera.camera.transform.forward);
 
 		float verticalScreenFOVFactor = Mathf.Tan(Mathf.Deg2Rad * camera.camera.fieldOfView * 0.5f);

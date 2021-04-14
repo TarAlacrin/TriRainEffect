@@ -26,7 +26,7 @@ public sealed class SpaceFog : CustomPostProcessVolumeComponent, IPostProcessCom
     public bool IsActive() => m_Material != null && intensity.value > 0f;
 
     // Do not forget to add this post process in the Custom Post Process Orders list (Project Settings > HDRP Default Settings).
-    public override CustomPostProcessInjectionPoint injectionPoint => CustomPostProcessInjectionPoint.AfterPostProcess;
+    public override CustomPostProcessInjectionPoint injectionPoint => CustomPostProcessInjectionPoint.BeforePostProcess;
 
     const string kShaderName = "Hidden/Shader/SpaceFogShader";
 
@@ -72,7 +72,7 @@ public sealed class SpaceFog : CustomPostProcessVolumeComponent, IPostProcessCom
 		}
 		else
 		{
-			Debug.Log("I AINT NULL");
+			//Debug.Log("I AINT NULL");
 
 		}
 

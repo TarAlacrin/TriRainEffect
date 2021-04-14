@@ -6,43 +6,53 @@
     #pragma only_renderers d3d11 ps4 xboxone vulkan metal switch
 
 
-    //#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
-    //#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
-    //#include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
-    //#include "Packages/com.unity.render-pipelines.high-definition/Runtime/PostProcessing/Shaders/FXAA.hlsl"
-    //#include "Packages/com.unity.render-pipelines.high-definition/Runtime/PostProcessing/Shaders/RTUpscale.hlsl"
-	#include "Packages/com.unity.postprocessing/PostProcessing/Shaders/StdLib.hlsl"
-	#include "Packages/com.unity.postprocessing/PostProcessing/Shaders/Colors.hlsl"
-	#include "Packages/com.unity.postprocessing/PostProcessing/Shaders/Sampling.hlsl"
-/*
-    struct Attributes
-    {
-        uint vertexID : SV_VertexID;
-        UNITY_VERTEX_INPUT_INSTANCE_ID
-    };
+    #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
+    #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
+    #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
+    #include "Packages/com.unity.render-pipelines.high-definition/Runtime/PostProcessing/Shaders/FXAA.hlsl"
+    #include "Packages/com.unity.render-pipelines.high-definition/Runtime/PostProcessing/Shaders/RTUpscale.hlsl"
+	//#include "Packages/com.unity.postprocessing/PostProcessing/Shaders/StdLib.hlsl"
+	//#include "Packages/com.unity.postprocessing/PostProcessing/Shaders/Colors.hlsl"
+	//#include "Packages/com.unity.postprocessing/PostProcessing/Shaders/Sampling.hlsl" 
 
-    struct Varyings
-    {
-        float4 positionCS : SV_POSITION;
-        float2 texcoord   : TEXCOORD0;
-        UNITY_VERTEX_OUTPUT_STEREO
-    };
 
-    Varyings Vert(Attributes input)
-    {
-        Varyings output;
-        UNITY_SETUP_INSTANCE_ID(input);
-        UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
-        output.positionCS = GetFullScreenTriangleVertexPosition(input.vertexID);
-        output.texcoord = GetFullScreenTriangleTexCoord(input.vertexID);
-        return output;
-    }
-	*/
+	struct Attributes
+	{
+		uint vertexID : SV_VertexID;
+		UNITY_VERTEX_INPUT_INSTANCE_ID
+	};
+
+	struct Varyings
+	{
+		float4 positionCS : SV_POSITION;
+		float2 texcoord   : TEXCOORD0;
+		UNITY_VERTEX_OUTPUT_STEREO
+	};
+
+	Varyings Vert(Attributes input)
+
+	{
+
+		Varyings output;
+
+		UNITY_SETUP_INSTANCE_ID(input);
+
+		UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
+
+		output.positionCS = GetFullScreenTriangleVertexPosition(input.vertexID);
+
+		output.texcoord = GetFullScreenTriangleTexCoord(input.vertexID);
+
+		return output;
+
+	}
+
+
     // List of properties to control your post process effect
     float _Intensity;
 	float _RayMarchStepSize;
-	TEXTURE2D_SAMPLER2D(_InputTexture, sampler_InputTexture);
-	TEXTURE2D_SAMPLER2D(_NoiseTexture, sampler_NoiseTexture);
+	TEXTURE2D_X(_InputTexture);
+	TEXTURE2D_X(_NoiseTexture);
 
 	uniform float3 _WSScreenVerticalDirection;
 	uniform float3 _WSScreenHorizontDirection;
@@ -72,7 +82,6 @@
 
 #define DITHERING
 #define BACKGROUND
-
 	//-------------------
 #define pi 3.14159265
 #define R(p, a) p=cos(a)*p+sin(a)*vec2(p.y, -p.x)
@@ -103,7 +112,7 @@
 		
 		loadUv.xy = (uv + 0.5) / 256.0;
 
-		float2 rg = _NoiseTexture.Load(loadUv).yx;//singleChannelNoise((uv + 0.5) / 256.0);//SAMPLE_TEXTURE2D_LOD(_NoiseTexture, (uv + 0.5) / 256.0, 0.0).yx;
+		float2 rg = LOAD_TEXTURE2D_X(_NoiseTexture, loadUv.xy).yx;//_NoiseTexture.Load(loadUv).yx;//singleChannelNoise((uv + 0.5) / 256.0);//SAMPLE_TEXTURE2D_LOD(_NoiseTexture, (uv + 0.5) / 256.0, 0.0).yx;
 		return 1. - 0.82*lerp(rg.x, rg.y, f.z);
 	} 
 
@@ -334,19 +343,20 @@
 
 	 
 
-    float4 CustomPostProcess(VaryingsDefault input) : SV_Target
+    float4 CustomPostProcess(Varyings input) : SV_Target
     {
-        //UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
+		UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
-        //uint2 positionSS = input.texcoord * _ScreenSize.xy;
 		float depth = 100;//LOAD_TEXTURE2D_X(_CameraDepthTexture, positionSS).x;
-		depth = 1.0/(_ZBufferParams.z*depth + _ZBufferParams.w);//LinearEyeDepth(depth);
+		//depth = 1.0/(_ZBufferParams.z*depth + _ZBufferParams.w);//LinearEyeDepth(depth);
 		 
-		float3 outColor = SAMPLE_TEXTURE2D(_NoiseTexture, sampler_NoiseTexture, UnityStereoTransformScreenSpaceTex(input.texcoord)).rgb;// LOAD_TEXTURE2D_X(_InputTexture, positionSS%255).xyz; 
-		outColor = DoRayMarch(depth, input.texcoord, outColor);
-		outColor = 0;
+		//float4 outColor = SAMPLE_TEXTURE2D(_NoiseTexture, sampler_NoiseTexture, UnityStereoTransformScreenSpaceTex(input.texcoord)).rgba;// LOAD_TEXTURE2D_X(_InputTexture, positionSS%255).xyz; 
 
-		return float4(outColor,  1); 
+		uint2 positionSS = input.texcoord * _ScreenSize.xy;
+
+		float3 incolor = LOAD_TEXTURE2D_X(_InputTexture, positionSS).xyz;
+
+		return float4(incolor,1);//float4(outColor,  10); 
     }
 
     ENDHLSL
@@ -364,7 +374,7 @@
 
             HLSLPROGRAM
                 #pragma fragment CustomPostProcess
-                #pragma vertex VertDefault
+                #pragma vertex Vert
             ENDHLSL
         }
     }

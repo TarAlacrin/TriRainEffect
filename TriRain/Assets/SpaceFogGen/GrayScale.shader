@@ -70,11 +70,11 @@
 
 		UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
-	uint2 positionSS = input.texcoord * _ScreenSize.xy;
+		uint2 positionSS = input.texcoord * _ScreenSize.xy;
 
-	float3 outColor = LOAD_TEXTURE2D_X(_InputTexture, positionSS).xyz;
+		float3 outColor = LOAD_TEXTURE2D_X(_InputTexture, positionSS).xyz;
 
-	return float4(lerp(outColor, Luminance(outColor).xxx, _Intensity), 1);
+		return float4(lerp(outColor, Luminance(outColor).xxx, _Intensity), 1);
 
 	}
 

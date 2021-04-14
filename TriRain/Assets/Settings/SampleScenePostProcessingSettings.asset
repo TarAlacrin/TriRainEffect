@@ -96,12 +96,12 @@ MonoBehaviour:
   m_Name: SampleScenePostProcessingSettings
   m_EditorClassIdentifier: 
   components:
+  - {fileID: 1873337378144351027}
   - {fileID: 8711377374188185572}
   - {fileID: 6640133647794636954}
   - {fileID: 396278178000043239}
   - {fileID: -2109818796249167647}
   - {fileID: -1141477753418227274}
-  - {fileID: 1873337378144351027}
 --- !u!114 &396278178000043239
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -138,7 +138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a1f79ee799fc6145b7142a009e39515, type: 3}
   m_Name: SpaceFog
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   m_AdvancedMode: 0
   intensity:
     m_OverrideState: 1

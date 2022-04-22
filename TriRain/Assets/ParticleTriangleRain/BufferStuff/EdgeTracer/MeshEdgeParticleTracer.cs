@@ -41,7 +41,7 @@ public class MeshEdgeParticleTracer : MonoBehaviour
 		//That shader then appends any valid particle ids which have reached their destination to an append buffer to be processed by another compute shader
 
 		//That shader then runs through each of the particles who have reached their target to see if they are at the bottom of a tri or not.
-		//If they are at the bottom, (or another factor like they were heading in the direction of a drop) the shader either re-adds them to the main particle list with new destination info, or adds them to the rain spawn list.
+		//If they are at the bottom, (or another factor like they were heading in the direction of a drop) the shader either re-adds them to the main particle list with new destination info, or adds them to the DRIP spawn list.
 
 
 

@@ -10,6 +10,14 @@
 /[Ll]ogs/
 /[Mm]emoryCaptures/
 
+TriRain/[Ll]ibrary/
+TriRain/[Tt]emp/
+TriRain/[Oo]bj/
+TriRain/[Bb]uild/
+TriRain/[Bb]uilds/
+TriRain/[Ll]ogs/
+TriRain/[Mm]emoryCaptures/
+
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
 

@@ -1,0 +1,45 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+#include "Assets/ComputeInc/ComputeIncludes.cginc"
+
+struct PulseData {
+	float originVertId;//store ids as floats to easier convert to texture later
+	float particleBirthTime;
+};
+
+float _Time;
+uint _VertCount;
+AppendStructuredBuffer<PulseData> _PulseLocations;
+Texture2D _MeshVertPositions;
+//AppendBufferToSpawnRainDropies
+
+uint findVertIndex(uint offsetID)
+{
+	for (uint i = 0; i < _VertCount; i++)
+	{
+		uint ind = (i + offsetID) % _VertCount;
+		uint2 coord = uint2(Coord(ind).xy);
+
+		float3 vpos = _MeshVertPositions[coord].xyz;
+
+		if (vpos.y > 0.5)
+			return i;
+	}
+
+	return 0;
+}
+
+ 
+
+[numthreads(1,1,1)]
+void CSMain (uint id : SV_DispatchThreadID)
+{
+	float rando = rand(float2(_Time, id));
+	PulseData pout;
+	pout.originVertId = int(rando * _VertCount) % _VertCount; //findVertIndex(int(rando*_VertCount)); //;
+	pout.particleBirthTime = _Time;
+	_PulseLocations.Append(pout);
+}

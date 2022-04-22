@@ -5,7 +5,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.Rendering.PostProcessing;
 
-public class SpacefogDensityTester : MonoBehaviour
+public class SpaceFog_DensityVolume_Controller : MonoBehaviour
 {
     DensityVolume dv;
     public RenderTexture linkedRenderTexture;
@@ -15,6 +15,7 @@ public class SpacefogDensityTester : MonoBehaviour
     void Start()
     {        
         dv = this.gameObject.GetComponent<DensityVolume>();
+        dv.parameters.volumeMask = linkedRenderTexture;
         //dv.parameters.volumeMask = linkedRenderTexture;
     }
 

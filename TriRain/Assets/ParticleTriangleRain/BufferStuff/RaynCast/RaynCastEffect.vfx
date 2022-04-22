@@ -44,9 +44,9 @@ MonoBehaviour:
   - title: NumFramesForVortex
     position:
       serializedVersion: 2
-      x: -520
-      y: 818
-      width: 283
+      x: -424
+      y: 816
+      width: 270
       height: 202
     contents:
     - model: {fileID: 8926484042661614784}
@@ -56,10 +56,10 @@ MonoBehaviour:
   categories: []
   uiBounds:
     serializedVersion: 2
-    x: -1715
+    x: -1879
     y: -133
-    width: 3692
-    height: 2723
+    width: 3856
+    height: 2702
 --- !u!114 &114350483966674976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -190,7 +190,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 0.1
+      m_SerializableObject: 0
     min: -Infinity
     max: Infinity
     enumValues: []
@@ -1111,7 +1111,7 @@ MonoBehaviour:
   m_UIIgnoredErrors: []
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
-  m_UIPosition: {x: -1095, y: 424}
+  m_UIPosition: {x: -1063, y: 401}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots:
@@ -1480,7 +1480,7 @@ MonoBehaviour:
   m_UIIgnoredErrors: []
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
-  m_UIPosition: {x: -1715, y: 135}
+  m_UIPosition: {x: -1879, y: 238}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots: []
@@ -1539,7 +1539,7 @@ MonoBehaviour:
   m_UIIgnoredErrors: []
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
-  m_UIPosition: {x: -1421, y: 169}
+  m_UIPosition: {x: -1443, y: 382}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots:
@@ -6149,7 +6149,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 0.1
+      m_SerializableObject: 0
     m_Space: 2147483647
   m_Property:
     name: o
@@ -6407,7 +6407,7 @@ MonoBehaviour:
   m_UIIgnoredErrors: []
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
-  m_UIPosition: {x: -495, y: 877}
+  m_UIPosition: {x: -399, y: 875}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots:

@@ -39,6 +39,35 @@ public class RaynCastBufferHandler : MonoBehaviour
 	}
 
 
+	public void TransposeSpawnIntsToTexture2D(List<int> indexToSpawnRainEffectsAt, int frameDelay)
+	{
+		IdListToVector2Array(indexToSpawnRainEffectsAt, frameDelay);
+
+		spawnIdBuffer.SetData(idBufferData);
+		TransposeToTexture2D(spawnIdBuffer, indexToSpawnRainEffectsAt.Count);
+
+
+		//TODO: delay on CPU the spawner command,
+	}
+
+
+	void IdListToVector2Array(List<int> indecies, float delay)
+	{
+		Vector2 iddelay = new Vector2(0f, delay);
+		for (int i = 0; i < idBufferData.Length; i++)
+		{
+			if (indecies.Count > 0)
+			{
+				int i1 = i % indecies.Count;
+				iddelay.x = (float)indecies[i1];
+				idBufferData[i] = iddelay;
+			}
+			else
+				idBufferData[i] = Vector2.zero;
+		}
+	}
+
+
 	void TransposeToTexture2D(ComputeBuffer buffer, int count)
 	{
 		if (_tempOutIds != null && _tempOutIds.width != _outIds.width)
@@ -65,35 +94,10 @@ public class RaynCastBufferHandler : MonoBehaviour
 	}
 
 
-	void IdListToVector2Array(List<int> indecies, float delay)
+	void DebugRainSpawnPositions(List<int> indexToSpawnEffects)
 	{
-		Vector2 iddelay = new Vector2(0f, delay);
-		for(int i =0; i < idBufferData.Length; i++)
-		{
-			if (indecies.Count > 0)
-			{
-				int i1 = i % indecies.Count;
-				iddelay.x = (float)indecies[i1];
-				idBufferData[i] = iddelay;
-			}
-			else
-				idBufferData[i] = Vector2.zero;
-		}
+
 	}
-
-
-
-	public void TransposeSpawnIntsToTexture2D(List<int> indexToSpawnRainEffectsAt, int frameDelay)
-	{
-		IdListToVector2Array(indexToSpawnRainEffectsAt, frameDelay);
-
-		spawnIdBuffer.SetData(idBufferData);
-		TransposeToTexture2D(spawnIdBuffer, indexToSpawnRainEffectsAt.Count);
-
-
-		//TODO: delay on CPU the spawner command,
-	}
-
 
 
 	private void OnDestroy()

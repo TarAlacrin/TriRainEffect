@@ -32,7 +32,7 @@ public class GlobalTextureSetter : MonoBehaviour
 				else
 					Debug.Log("defo not?");
 
-			}
+			} 
 			else
 				Debug.LogError("N O SPACEFGOG");
 		}

@@ -46,7 +46,7 @@ ParticleData FindNextTarget(ParticleData indata, int seedId)
 	int adjacentIndexStart = index * _AdjacentVertBufferStride;
 
 	float3 oldDir = normalize(wsCurPos - oldPos);
-	float3 curDir = float3(0, -1, 0);//add in the vertex velocity somehow
+	float3 curDir = float3(0, -1, 0);//todo: add in the vertex velocity somehow
 	float curDot = 0.5;
 
 	float curDist= 1;

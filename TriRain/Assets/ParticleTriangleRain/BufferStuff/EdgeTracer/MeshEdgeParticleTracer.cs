@@ -81,7 +81,7 @@ public class MeshEdgeParticleTracer : MonoBehaviour
 
 		//Debug.Log("I have this many parts simming: " + appargs[0]);
 		if(appargs[0] >0)
-			edgeTracerCompute.Dispatch(_etkernel, appargs[0], 1, 1);
+			edgeTracerCompute.Dispatch(_etkernel, Mathf.Min(appargs[0], 65535), 1, 1);
 
 		//Graphics.CopyTexture(_tempParticlePositions, outputParticlePositionTex);
 	}

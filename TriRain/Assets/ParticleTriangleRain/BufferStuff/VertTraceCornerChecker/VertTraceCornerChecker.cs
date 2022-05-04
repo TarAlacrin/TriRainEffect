@@ -137,6 +137,7 @@ public class VertTraceCornerChecker : MonoBehaviour
 		cornerCheckerCompute.SetBuffer(_cckernel, "_VerteciesToSpawnRainFrom", RainFallingPointMaker.inst.GetSpawnIdBuffer());
 		int[] appargs = BufferTools.GetArgs(cornersToCheck, argsBuffer);
 
+		Debug.Log("VertTraceCornerChecker dispatch count: " + appargs[0]);
 		if(appargs[0] > 0)
 			cornerCheckerCompute.Dispatch(_cckernel, appargs[0], 1, 1);
 

@@ -27,10 +27,10 @@ public class GlobalTextureSetter : MonoBehaviour
 			{
 				spacefog.NoiseTexture = tex;
 
-				if(spacefog.NoiseTexture == null)
-					Debug.Log("am I null?");
-				else
-					Debug.Log("defo not?");
+				//if(spacefog.NoiseTexture == null)
+				//	Debug.Log("I am null?");
+				//else
+				//	Debug.Log("defo not?");
 
 			} 
 			else
